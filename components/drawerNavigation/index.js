@@ -3,6 +3,9 @@ import { Text, View, Image, Alert, TouchableHighlight, StyleSheet, TouchableOpac
 import { DrawerLayoutAndroid } from 'react-native';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DrawerItem from './drawerItem'
+import AsyncStorage from '@react-native-community/async-storage';
+
+
 
 const Navigation = (props) => {
 
@@ -11,7 +14,8 @@ const Navigation = (props) => {
     const [visible, setVisible] = useState(true);
 
     const [loggedInUser, setLoggedInUser] = useState(null);
-    const [state, setState] = useState(false);
+    const [drawerState, setDrawerState] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     var _drawer = useRef(null);
 
     useEffect(() => {
@@ -19,14 +23,55 @@ const Navigation = (props) => {
 
     }, [])
 
+    const onDrawerOpen = async() => {
+        let data = await AsyncStorage.getItem('billsplit_user_key');
+        if (data) {
+            setIsLoggedIn(true);
 
+        } else {
+            setIsLoggedIn(false);
+        }
+    }
 
     const openDrawerNavigation = () => {
         _drawer.openDrawer();
     }
+    const closeDrawerNavigation = () => {
+        _drawer.closeDrawer();
+    }
 
     const handleDrawerClose = () => {
         console.log('drawer closed')
+    }
+
+    const confirmLogOut = () => {
+        closeDrawerNavigation();
+        Alert.alert(
+            'Warning',
+            'Are you sure you want Logout ?',
+            [
+                { text: 'Cancel' },
+                { text: 'OK', onPress: () => handleLogOut() },
+
+            ],
+            { cancelable: false },
+        );
+    }
+
+    const handleLogOut = async() => {
+        try {
+            let del = await AsyncStorage.removeItem('billsplit_user_key');
+        } catch(err) {
+            Alert.alert(
+                'Error',
+                'Logout Failed try again',
+                [
+                    { text: 'OK' },
+    
+                ],
+                { cancelable: false },
+            );
+        }
     }
 
 
@@ -55,12 +100,24 @@ const Navigation = (props) => {
                 iconType='material-community'
                 onPress={() => console.log('pressed')}
             />
-            <DrawerItem
+            {!isLoggedIn &&
+                <DrawerItem
                 name='Log In'
                 icon='login'
                 iconType='material-community'
                 onPress={() => console.log('pressed')}
             />
+            }
+            
+            {isLoggedIn &&
+                <DrawerItem
+                name='Log Out'
+                icon='logout'
+                iconType='material-community'
+                onPress={confirmLogOut}
+            />
+            }
+            
 
 
         </View>
@@ -78,6 +135,7 @@ const Navigation = (props) => {
             drawerBackgroundColor="rgba(1,5,7,0.5)"
             renderNavigationView={() => navigationView}
             onDrawerClose={handleDrawerClose}
+            onDrawerOpen={onDrawerOpen}
         >
             {props.children}
 

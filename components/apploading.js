@@ -9,7 +9,7 @@ import {
     ActivityIndicator,
     Image
 } from 'react-native';
-import {Button} from 'react-native-elements'
+import {Button,Icon} from 'react-native-elements'
 
 
 const LoadingPage = (props) => {
@@ -30,7 +30,7 @@ const LoadingPage = (props) => {
 
                 <Button
                     title="goto details"
-                    onPress={() => props.navigation.navigate('Details')}
+                    onPress={() => props.navigation.navigate('Login')}
                 />
             </View>
 
