@@ -4,22 +4,16 @@ import { DrawerLayoutAndroid } from 'react-native';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DrawerItem from './drawerItem'
 import AsyncStorage from '@react-native-community/async-storage';
+import * as RootNavigation from '../../RootNavigation.js';
 
 
 
 const Navigation = (props) => {
-
-
-
-    const [visible, setVisible] = useState(true);
-
-    const [loggedInUser, setLoggedInUser] = useState(null);
-    const [drawerState, setDrawerState] = useState(false);
+    
     const [isLoggedIn, setIsLoggedIn] = useState(null);
     var _drawer = useRef(null);
 
     useEffect(() => {
-
 
     }, [])
 
@@ -74,6 +68,11 @@ const Navigation = (props) => {
         }
     }
 
+    const gotoLogin = () => {
+        closeDrawerNavigation();
+        RootNavigation.navigate('Login');
+    }
+
 
 
 
@@ -105,7 +104,7 @@ const Navigation = (props) => {
                 name='Log In'
                 icon='login'
                 iconType='material-community'
-                onPress={() => console.log('pressed')}
+                onPress={gotoLogin}
             />
             }
             

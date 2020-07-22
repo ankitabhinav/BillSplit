@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, StatusBar, Alert } from 'react-native';
-import { Input, Button,Text } from 'react-native-elements'
+import { StyleSheet, View, Alert } from 'react-native';
+import { Input, Button, Text } from 'react-native-elements'
 import api from '../api'
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -42,9 +42,27 @@ const Login = () => {
         setPassword(e);
     }
 
+    function ValidateEmail(mail) {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return (true)
+        }
+        
+        return (false)
+    }
+
     const handleLogin = async () => {
         setSpinner(true);
         console.log('Email :' + email + '  Password:' + password)
+        if (email === null || password === null) {
+            setSpinner(false);
+            return alert('enter email and password to continue');
+        }
+
+        if(!ValidateEmail(email)) {
+            setSpinner(false);
+            return alert("You have entered an invalid email address!");
+        }
+        
         try {
             let response = await api.post('/login', {
                 email: email,
@@ -91,7 +109,6 @@ const Login = () => {
 
     return (
         <React.Fragment>
-            <StatusBar barStyle="dark-content" />
             {!isLoggedIn &&
 
                 <View style={styles.container}>

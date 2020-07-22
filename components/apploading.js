@@ -12,9 +12,10 @@ import {
 import {Button,Icon} from 'react-native-elements'
 
 
-const LoadingPage = (props) => {
+const LoadingPage = ({navigation}) => {
     useEffect(() => {
         console.log('app loaded')
+        setTimeout(function(){ navigation.navigate('HomeScreen'); }, 2000);
     }, [])
 
     return (
@@ -28,10 +29,7 @@ const LoadingPage = (props) => {
                 <Text style={{ color: 'white' }}>BillSplit</Text>
                 <ActivityIndicator style={{ marginTop: '2%' }} size="small" color="#fff" />
 
-                <Button
-                    title="goto details"
-                    onPress={() => props.navigation.navigate('Login')}
-                />
+                
             </View>
 
         </React.Fragment>
