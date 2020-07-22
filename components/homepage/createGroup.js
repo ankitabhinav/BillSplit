@@ -8,63 +8,117 @@ import AsyncStorage from '@react-native-community/async-storage';
 const CreateGroup = (props) => {
 
     const [spinner, setSpinner] = useState(null);
-    const [modalState, setModalState] =useState(false);
+    const [modalState, setModalState] = useState(true);
+    const [groupName, setGroupName] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
+
 
 
     useEffect(() => {
         setModalState(!modalState);
-        
+
     }, [props.modal])
 
-    const handleGroupInput = () => { 
-
+    const handleGroupInput = (e) => {
+        setGroupName(e);
     }
 
-    const handleSubmit = () => {
-        
-    }
+    const handleSubmit = async() => {
+        if (groupName.length<1) {
+            return setErrorMessage('Group name is empty')
+        }
+        if(groupName. length < 5) {
+            return setErrorMessage('Enter atleast 5 characters')
+        }
+        setErrorMessage(null);
 
-    const toggleModalState = () => {
-        setModalState(!modalState);
+        try {
+            setSpinner(true);
+            let auth_token = await AsyncStorage.getItem('billsplit_user_key');
+
+            let response = await api.post('/groups',{
+                auth_token:auth_token,
+                group_name: groupName
+            })
+
+            if(response.data.group_name == groupName) {
+                setSpinner(false);
+                props.onPress();
+                props.refresh();
+                return  Alert.alert(
+                    'Success',
+                    'Group Created',
+                    [
+                        { text: 'OK' },
+                    ],
+                    { cancelable: false },
+                );
+            } else {
+                setSpinner(false);
+                return  Alert.alert(
+                    'Error',
+                    'Something went wrong !',
+                    [
+                        { text: 'OK' },
+                    ],
+                    { cancelable: false },
+                );
+            }
+        } catch(err) {
+            console.log(err.response.data)
+            setSpinner(false);
+            return  Alert.alert(
+                'Error',
+                'Something went wrong !!',
+                [
+                    { text: 'OK' },
+                ],
+                { cancelable: false },
+            );
+        }
+
     }
 
 
     return (
-            <Overlay
-                isVisible={modalState}
-                windowBackgroundColor="rgba(255, 255, 255, .5)"
-                overlayBackgroundColor="red"
-                animationType='fade'
-                onBackdropPress={() => toggleModalState}
+        <Overlay
+            isVisible={true}
+            windowBackgroundColor="rgba(255, 255, 255, .5)"
+            overlayBackgroundColor="red"
+            animationType='fade'
+            onBackdropPress={props.onPress}
 
-            >
-                <View style={{ width: 300 }}>
-                    <Input
-                        placeholder='your group name goes here'
+        >
+            <View style={{ width: 300, marginBottom: 10 }}>
+                <Text h4 style={{ marginHorizontal: 10, marginVertical: 10, fontWeight: '100' }}>New Group</Text>
+                <Input
+                    placeholder='Enter group name'
+                    errorStyle={{ color: 'red' }}
+                    errorMessage={errorMessage}
+                    onChangeText={handleGroupInput}
+                    disabled={spinner}
+                />
 
-                        onChangeText={handleGroupInput}
-                    />
+                <Button
+                    title="Create"
+                    loading={spinner}
+                    containerStyle={{ width: '40%', alignSelf: 'center' }}
+                    raised={true}
+                    onPress={handleSubmit}
 
-                    <Button
-                        title="Login"
-                        loading={spinner}
-                        containerStyle={{ width: '40%', alignSelf: 'center' }}
-                        raised={true}
-                        onPress={handleSubmit}
+                />
 
-                    />
+            </View>
 
-                </View>
-
-            </Overlay>
+        </Overlay>
     )
 }
 
 
 
 const styles = StyleSheet.create({
-                container: {
-                flex: 1,
+    container: {
+        flex: 1,
 
     }
 });

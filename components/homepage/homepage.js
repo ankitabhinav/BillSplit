@@ -5,7 +5,8 @@ import {
     View,
     StatusBar,
     ActivityIndicator,
-    Image
+    Image,
+    RefreshControl
 } from 'react-native';
 import { ListItem, Text, Icon, SearchBar, Button } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler';
@@ -19,16 +20,22 @@ const LoadingPage = () => {
 
     const [spinner, setSpinner] = useState(false);
     const [groups, setGroups] = useState(null);
-
-
+    const [modalState, setModalState] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         console.log('app loaded')
         getGroups();
     }, [])
 
+    const onRefresh = () => {
+        setRefreshing(true);
+        getGroups();
+    }
+
 
     const getGroups = async () => {
+        console.log('fetch called')
         let auth_token = await AsyncStorage.getItem('billsplit_user_key');
         try {
             let response = await api.post('/groups/fetch_groups', {
@@ -39,76 +46,23 @@ const LoadingPage = () => {
             if (response.data.success === true) {
                 setGroups(response.data.groups);
                 setSpinner(false);
+                setRefreshing(false);
                 return console.log(response.data.groups);
             } else {
                 setSpinner(false);
+                setRefreshing(false);
                 return console.log(response.data.status)
             }
         }
         catch (err) {
             setSpinner(false);
+            setRefreshing(false);
 
             return console.log(err.response.data.status)
         }
 
 
     }
-
-
-    const list = [
-        {
-            name: 'Amy Farha',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-            subtitle: 'Vice President'
-        },
-        {
-            name: 'Chris Jackson',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-            subtitle: 'Vice Chairman'
-        },
-        {
-            name: 'Amy Farha',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-            subtitle: 'Vice President'
-        },
-        {
-            name: 'Chris Jackson',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-            subtitle: 'Vice Chairman'
-        },
-        {
-            name: 'Amy Farha',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-            subtitle: 'Vice President'
-        },
-        {
-            name: 'Chris Jackson',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-            subtitle: 'Vice Chairman'
-        },
-        {
-            name: 'Amy Farha',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-            subtitle: 'Vice President'
-        },
-        {
-            name: 'Chris Jackson',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-            subtitle: 'Vice Chairman'
-        },
-        {
-            name: 'Amy Farha',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-            subtitle: 'Vice President'
-        },
-        {
-            name: 'Chris Jackson',
-            avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-            subtitle: 'Vice Chairman'
-        },
-
-    ]
-
 
 
     const CompanyLogo = () => {
@@ -129,13 +83,25 @@ const LoadingPage = () => {
 
 
     const openCreateGroup = () => {
-        
+        console.log('gggg')
+        setModalState(true);
+    }
+
+    const hideCreateGroup = () => {
+        setModalState(false);
+    }
+
+    const handleRefresh = () => {
+        getGroups();
     }
 
     return (
         <React.Fragment>
             <StatusBar barStyle="dark-content" />
             <View style={styles.container}>
+                {modalState &&
+                    <CreateGroup onPress={hideCreateGroup} refresh={() => handleRefresh()} />
+                }
 
                 <View style={styles.headerContainer}>
                     <View style={{ marginTop: 15 }}>
@@ -158,9 +124,14 @@ const LoadingPage = () => {
                 {!spinner &&
 
                     <View style={{ flexDirection: 'column', width: '100%' }}>
-                        <ScrollView>
+                        <ScrollView
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                              }
+                        
+                        >
                             <Text h3 style={{ marginHorizontal: 10, marginVertical: 10 }}>My Groups</Text>
-                            <CreateGroup/>
+
                             {groups &&
                                 groups.map((item, i) => (
                                     <ListItem
