@@ -9,7 +9,7 @@ import * as RootNavigation from '../../RootNavigation.js';
 
 
 const Navigation = (props) => {
-    
+
     const [isLoggedIn, setIsLoggedIn] = useState(null);
     var _drawer = useRef(null);
 
@@ -17,7 +17,7 @@ const Navigation = (props) => {
 
     }, [])
 
-    const onDrawerOpen = async() => {
+    const onDrawerOpen = async () => {
         let data = await AsyncStorage.getItem('billsplit_user_key');
         if (data) {
             setIsLoggedIn(true);
@@ -52,16 +52,17 @@ const Navigation = (props) => {
         );
     }
 
-    const handleLogOut = async() => {
+    const handleLogOut = async () => {
         try {
             let del = await AsyncStorage.removeItem('billsplit_user_key');
-        } catch(err) {
+            RootNavigation.navigate('Login');
+        } catch (err) {
             Alert.alert(
                 'Error',
                 'Logout Failed try again',
                 [
                     { text: 'OK' },
-    
+
                 ],
                 { cancelable: false },
             );
@@ -73,19 +74,24 @@ const Navigation = (props) => {
         RootNavigation.navigate('Login');
     }
 
+    const gotoViewGroup = () => {
+        closeDrawerNavigation();
+        RootNavigation.navigate('ViewGroup');
+    }
+
 
 
 
     var navigationView = (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
 
-            <View style={{flexDirection:'row',marginVertical:10}}>
+            <View style={{ flexDirection: 'row', marginVertical: 10 }}>
                 <Image
                     style={{ height: 85, width: 86, padding: '1%', marginTop: '4%', marginLeft: '5%', borderRadius: 0, marginBottom: '1%' }}
                     source={{ uri: 'https://i.ibb.co/2YNxscS/billsplit-icon.png' }}
 
                 />
-                <Text style={{ color: 'black', marginTop: 25, marginLeft: '5%',fontSize:20 }}>BillSplit</Text>
+                <Text style={{ color: 'black', marginTop: 25, marginLeft: '5%', fontSize: 20 }}>BillSplit</Text>
             </View>
             <DrawerItem
                 name='Home'
@@ -101,22 +107,28 @@ const Navigation = (props) => {
             />
             {!isLoggedIn &&
                 <DrawerItem
-                name='Log In'
-                icon='login'
-                iconType='material-community'
-                onPress={gotoLogin}
-            />
+                    name='Log In'
+                    icon='login'
+                    iconType='material-community'
+                    onPress={gotoLogin}
+                />
             }
-            
+
             {isLoggedIn &&
-                <DrawerItem
-                name='Log Out'
-                icon='logout'
-                iconType='material-community'
-                onPress={confirmLogOut}
-            />
+                <React.Fragment>
+                   
+                    <DrawerItem
+                        name='Log Out'
+                        icon='logout'
+                        iconType='material-community'
+                        onPress={confirmLogOut}
+                    />
+
+                </React.Fragment>
+
+
             }
-            
+
 
 
         </View>

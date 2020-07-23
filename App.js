@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AppLoading from './components/apploading'
 import HomeScreen from './components/homepage/homepage'
 import LoginPage from './components/login/login'
+import ViewGroupPage from './components/viewGroup/viewgroup'
 import DrawerNavigation from './components/drawerNavigation'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { navigationRef } from './RootNavigation';
@@ -40,6 +41,7 @@ function App() {
               component={LoginPage}
               options={
                 {
+                  headerShown:false,
                   headerStyle: {
                     backgroundColor: '#42a5f5'
                   },
@@ -48,6 +50,7 @@ function App() {
                 }
               } />
             <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name ="ViewGroup" component={ViewGroupPage} options={{headerShown : false}} />
 
           </Stack.Navigator>
         </DrawerNavigation>

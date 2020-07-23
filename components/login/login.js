@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 
 
-const Login = () => {
+const Login = ({navigation}) => {
     const input = React.createRef();
     const [emailFocus, setEmailFocus] = useState(false);
     const [passwordFocus, setPasswordFocus] = useState(false);
@@ -17,6 +17,10 @@ const Login = () => {
     const [password, setPassword] = useState(null);
 
     useEffect(() => {
+        navigation.addListener('beforeRemove', (e) => {
+            // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        })
         console.log('login page loaded')
         checkLocalStorage();
 
@@ -70,6 +74,13 @@ const Login = () => {
             });
 
             if (response.data.status === 'login successful') {
+                try {
+                    let key = await AsyncStorage.setItem('billsplit_user_key', response.data.jwt);
+                    let email = await AsyncStorage.setItem('billsplit_user_email', response.data.email);
+                } catch (err) {
+                    console.log(err);
+                }
+                navigation.navigate('HomeScreen')
                 Alert.alert(
                     'Success',
                     "Login Successful",
@@ -78,12 +89,7 @@ const Login = () => {
                     ],
                     { cancelable: false },
                 );
-                try {
-                    let key = await AsyncStorage.setItem('billsplit_user_key', response.data.jwt);
-                    let email = await AsyncStorage.setItem('billsplit_user_email', response.data.email);
-                } catch (err) {
-                    console.log(err);
-                }
+                
             }
             console.log(response.data);
 

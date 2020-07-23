@@ -4,15 +4,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 const instance =axios.create({
      baseURL : "https://kepptrack.herokuapp.com"
-    //baseURL:"https://991d50b9f821.ngrok.io"
+    //baseURL:" https://d9a3313d1be7.ngrok.io"
 });
 
 instance.interceptors.request.use (
     async (config) => {
         const data = await AsyncStorage.getItem('billsplit_user_key');
         if(data) {
-            config.headers['X-AUTH-TOKEN'] = data;
-            config.headers['source'] = 'android'
+           config.headers.Authorization = `Bearer ${data}`
         }
         return config;
     },

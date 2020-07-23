@@ -41,7 +41,9 @@ const CreateGroup = (props) => {
                 group_name: groupName
             })
 
-            if(response.data.group_name == groupName) {
+            console.log(response.data)
+
+            if(response.data.success === true) {
                 setSpinner(false);
                 props.onPress();
                 props.refresh();

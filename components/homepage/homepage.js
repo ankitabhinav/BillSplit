@@ -6,7 +6,9 @@ import {
     StatusBar,
     ActivityIndicator,
     Image,
-    RefreshControl
+    RefreshControl,
+    BackHandler,
+    Alert
 } from 'react-native';
 import { ListItem, Text, Icon, SearchBar, Button } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler';
@@ -14,23 +16,80 @@ import api from '../api'
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios'
 import CreateGroup from './createGroup'
+import { useLinkProps } from '@react-navigation/native';
 
 
-const LoadingPage = () => {
+const LoadingPage = (props) => {
 
     const [spinner, setSpinner] = useState(false);
     const [groups, setGroups] = useState(null);
+    const [backup, setBackUp] = useState(null);
     const [modalState, setModalState] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [query, setQuery] = useState('')
+
+    let avatars = [
+        'https://i.ibb.co/WvL1YXc/bee.png',
+        'https://i.ibb.co/2s4QvvJ/cat.png',
+        'https://i.ibb.co/fpQ8Yhd/elephant.png',
+        'https://i.ibb.co/5xDjnfB/fox.png',
+        'https://i.ibb.co/2cK6kRv/leopard.png',
+        'https://i.ibb.co/t87wFPT/lion.png',
+        'https://i.ibb.co/WpyLZv5/monkey.png',
+        'https://i.ibb.co/pZFrW77/raccoon.png',
+        'https://i.ibb.co/LR2Zm24/rhino.png',
+        'https://i.ibb.co/2cK6kRv/leopard.png',
+    ]
 
     useEffect(() => {
+        props.navigation.addListener('focus', () => {
+            // do something
+            BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+          });
+
+        const unsubscribe = props.navigation.addListener('blur', () => {
+            // do something
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+          });
         console.log('app loaded')
         getGroups();
+
+        return () => {
+          unsubscribe;
+        };
     }, [])
+
+    const handleBackButtonClick = () => {
+        Alert.alert(
+            'Exit App ?',
+            "Press OK to exit",
+            [
+                { text: 'Cancel'},
+                { text: 'OK', onPress: () =>  BackHandler.exitApp() }
+               
+            ],
+            { cancelable: true },
+        );
+       
+        return true;
+    }
 
     const onRefresh = () => {
         setRefreshing(true);
         getGroups();
+    }
+
+    const handleSearch = (e) => {
+        setQuery(e)
+
+        if (e.length === 0) {
+            return setGroups(backup);
+        } else {
+            const filteredGroups = groups.filter((item) => item.group_name.startsWith(e));
+            setGroups(filteredGroups);
+        }
+
+        
     }
 
 
@@ -45,9 +104,11 @@ const LoadingPage = () => {
             });
             if (response.data.success === true) {
                 setGroups(response.data.groups);
+                setBackUp(response.data.groups)
                 setSpinner(false);
                 setRefreshing(false);
-                return console.log(response.data.groups);
+                return
+                //console.log(response.data.groups);
             } else {
                 setSpinner(false);
                 setRefreshing(false);
@@ -111,10 +172,11 @@ const LoadingPage = () => {
                     <View style={{ marginVertical: 5, width: '100%' }}>
                         <SearchBar
                             placeholder="Type Here..."
-                            value={'Search'}
+                            value={query}
                             containerStyle={{ backgroundColor: '#2196f3', borderTopColor: '#2196f3', borderBottomColor: '#2196f3' }}
                             lightTheme={true}
                             inputContainerStyle={{ backgroundColor: '#f5f5f5' }}
+                            onChangeText={handleSearch}
                         />
                     </View>
                 </View>
@@ -123,27 +185,31 @@ const LoadingPage = () => {
                 }
                 {!spinner &&
 
-                    <View style={{ flexDirection: 'column', width: '100%' }}>
+                    <View style={{ flexDirection: 'column', width: '100%', flex: 1 }}>
                         <ScrollView
                             refreshControl={
                                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                              }
-                        
+                            }
+
                         >
                             <Text h3 style={{ marginHorizontal: 10, marginVertical: 10 }}>My Groups</Text>
 
                             {groups &&
-                                groups.map((item, i) => (
-                                    <ListItem
-                                        key={item.group_name}
-                                        leftAvatar={{ source: { uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' } }}
+                                groups.map((item, i) => {
+
+                                    // let index = Math.floor(Math.random() * 10);
+                                    return <ListItem
+                                        key={i}
+                                        // leftAvatar={{ source: { uri: avatars[index] } }}
+                                        leftIcon={{ name: 'account-circle-outline', type: 'material-community', size: 40 }}
                                         title={item.group_name}
                                         subtitle={item.created_by}
                                         bottomDivider
                                         chevron
                                         style={{ marginVertical: 2, marginHorizontal: 2 }}
+                                        onPress={() => props.navigation.navigate('ViewGroup', { group: item })}
                                     />
-                                ))
+                                })
                             }
                         </ScrollView>
                     </View>
