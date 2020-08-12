@@ -2,21 +2,21 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
-const instance =axios.create({
+const instance = axios.create({
     // baseURL : "https://kepptrack.herokuapp.com"
-    baseURL:"https://f8e268efe1b7.ngrok.io"
+    baseURL: "https://d40ac0305108.ngrok.io"
 });
 
-instance.interceptors.request.use (
+instance.interceptors.request.use(
     async (config) => {
         const data = await AsyncStorage.getItem('billsplit_user_key');
-        if(data) {
-           config.headers.Authorization = `Bearer ${data}`
+        if (data) {
+            config.headers.Authorization = `Bearer ${data}`
         }
         return config;
     },
     (err) => {
-       
+
         return Promise.reject(err);
     }
 );

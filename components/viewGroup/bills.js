@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text,ScrollView, RefreshControl } from 'react-native'
 import {ListItem, Icon} from 'react-native-elements'
 import AddBill from './addBill'
+import ViewBill from './viewBill' 
 import api from '../api'
-
-
-
 
 const Bills = ({ bills, created_by, group_id }) => {
 
     const [modalState, setModalState] = useState(false);
+    const [viewBillModalState, setViewBillModalState] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [spinner, setSpinner] = useState(false);
     const [transactionsState, setTransactionsState] = useState(bills)
+    const [viewBillDetail, setViewBillDetail] = useState(null)
 
 
 
@@ -66,6 +66,15 @@ const Bills = ({ bills, created_by, group_id }) => {
         setModalState(false);
     }
 
+    const openViewBill = (billDetail) => {
+        setViewBillModalState(true);
+        setViewBillDetail(billDetail);
+    }
+
+    const hideViewBill = () => {
+        setViewBillModalState(false);
+    }
+
     const handleRefresh = () => {
         getTransactions();
     }
@@ -76,7 +85,10 @@ const Bills = ({ bills, created_by, group_id }) => {
         <View style={styles.container}>
              {modalState &&
                 <AddBill onPress={hideAddBill} refresh={() => handleRefresh()} group_id={group_id} />
-            }
+             }
+             {viewBillModalState &&
+                <ViewBill onPress={hideViewBill}  group_id={group_id} amount={viewBillDetail.amount} description={viewBillDetail.purpose} type={viewBillDetail.type} to={viewBillDetail.to ? viewBillDetail.to : null} />
+             }
             <ScrollView
             
             refreshControl={
@@ -86,6 +98,7 @@ const Bills = ({ bills, created_by, group_id }) => {
             {transactionsState &&
                 transactionsState.map((item, i) => (
                     <ListItem
+                        onPress={ () =>openViewBill(item)}
                         key={i}
                         //leftAvatar={{ source: { uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' } }}
                         leftIcon={{ name: 'file-document-edit-outline', type:'material-community', size:40 }}
