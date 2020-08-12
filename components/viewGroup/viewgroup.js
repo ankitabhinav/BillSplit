@@ -60,7 +60,7 @@ const ViewGroup = (props) => {
     );
 
     const SecondRoute = () => (
-        <Members members={groups.members} created_by={groups.created_by} />
+        <Members members={groups.members} created_by={groups.created_by} group_id={groups._id} />
     );
 
     const ThirdRoute = () => (
@@ -178,11 +178,25 @@ const ViewGroup = (props) => {
     }
 
 
-    const renderScene = SceneMap({
+    /* const renderScene = SceneMap({
         bills: FirstRoute,
         members: SecondRoute,
         summary: ThirdRoute
-    });
+    }); */
+
+
+    const renderScene = ({ route }) => {
+        switch (route.key) {
+          case 'bills':
+            return  <Bills bills={groups.transactions} created_by={groups.created_by} group_id={groups._id}  />
+          case 'members':
+            return  <Members members={groups.members} created_by={groups.created_by} group_id={groups._id} />
+          case 'summary':
+                return   <Summary summary={summary} created_by={groups.created_by} group_id={groups._id}  />
+          default:
+            return null;
+        }
+      };
 
     return (
         <React.Fragment>
@@ -195,15 +209,6 @@ const ViewGroup = (props) => {
                         <CompanyLogo />
                     </View>
 
-                    {/*   <View style={{ marginVertical: 5, width: '100%' }}>
-                        <SearchBar
-                            placeholder="Type Here..."
-                            value={'Search'}
-                            containerStyle={{ backgroundColor: '#2196f3', borderTopColor: '#2196f3', borderBottomColor: '#2196f3' }}
-                            lightTheme={true}
-                            inputContainerStyle={{ backgroundColor: '#f5f5f5' }}
-                        />
-                    </View> */}
                 </View>
                 <View style={{ flex: 1, width: '100%' }}>
                     <TabView
@@ -211,6 +216,7 @@ const ViewGroup = (props) => {
                         renderScene={renderScene}
                         onIndexChange={setIndex}
                         initialLayout={initialLayout}
+                        lazy={true}
                     />
                 </View>
 

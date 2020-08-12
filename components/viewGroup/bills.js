@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text,ScrollView } from 'react-native'
-import {ListItem} from 'react-native-elements'
+import { StyleSheet, View, Text,ScrollView, RefreshControl } from 'react-native'
+import {ListItem, Icon} from 'react-native-elements'
+import AddBill from './addBill'
+import api from '../api'
 
 
-const Bills = ({ bills, created_by }) => {
+
+
+const Bills = ({ bills, created_by, group_id }) => {
+
+    const [modalState, setModalState] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+    const [spinner, setSpinner] = useState(false);
+    const [transactionsState, setTransactionsState] = useState(bills)
+
+
+
 
     useEffect(() => {
         console.log('bills loaded')
@@ -11,13 +23,68 @@ const Bills = ({ bills, created_by }) => {
     })
 
 
+
+    const getTransactions = async () => {
+        console.log('fetch transactions called')
+
+        try {
+            let response = await api.get('groups/transaction?group_id=' + group_id);
+           // console.log(response.data);
+            if (response.data.success === true) {
+                //setGroups(response.data.groups);
+                //setBackUp(response.data.groups)
+                setTransactionsState(response.data.data)
+                setSpinner(false);
+                setRefreshing(false);
+                return
+
+            } else {
+                setSpinner(false);
+                setRefreshing(false);
+                return console.log(response.data.status)
+            }
+        }
+        catch (err) {
+            setSpinner(false);
+            setRefreshing(false);
+            return console.log(err.response.data.status)
+        }
+
+
+    }
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        getTransactions();
+    }
+
+    const openAddBill = () => {
+        setModalState(true);
+    }
+
+    const hideAddBill = () => {
+        setModalState(false);
+    }
+
+    const handleRefresh = () => {
+        getTransactions();
+    }
+
+
     return (
 
         <View style={styles.container}>
-            <ScrollView>
+             {modalState &&
+                <AddBill onPress={hideAddBill} refresh={() => handleRefresh()} group_id={group_id} />
+            }
+            <ScrollView
+            
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
 
-            {bills &&
-                bills.map((item, i) => (
+            {transactionsState &&
+                transactionsState.map((item, i) => (
                     <ListItem
                         key={i}
                         //leftAvatar={{ source: { uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' } }}
@@ -42,6 +109,15 @@ const Bills = ({ bills, created_by }) => {
                 ))
             }
             </ScrollView>
+            <Icon
+                    reverse
+                    name='plus'
+                    type='material-community'
+                    color='#f44336'
+                    raised={true}
+                    containerStyle={styles.submitButton}
+                    onPress={openAddBill}
+                />
 
         </View>
 
@@ -51,7 +127,13 @@ const Bills = ({ bills, created_by }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    }
+    },
+    submitButton: {
+        // alignSelf: 'flex-end',
+        position: 'absolute',
+        bottom: 20,
+        right: 20
+    },
 
 })
 

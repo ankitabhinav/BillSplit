@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {StatusBar} from 'react-native'
+import {StatusBar,SafeAreaView} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AppLoading from './components/apploading'
@@ -30,6 +30,7 @@ const theme = {
 
 function App() {
   return (
+    <SafeAreaView style={{flex:1}}>
     <ThemeProvider theme={theme}>
       <StatusBar barStyle="light-content" backgroundColor='#2196f3' />
       <NavigationContainer ref={navigationRef}>
@@ -56,6 +57,7 @@ function App() {
         </DrawerNavigation>
       </NavigationContainer>
     </ThemeProvider>
+    </SafeAreaView>
 
   );
 }

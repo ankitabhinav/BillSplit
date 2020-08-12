@@ -8,7 +8,7 @@ import {
     Image,
     RefreshControl,
     BackHandler,
-    Alert
+    Alert,SafeAreaView
 } from 'react-native';
 import { ListItem, Text, Icon, SearchBar, Button } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler';
@@ -187,6 +187,7 @@ const LoadingPage = (props) => {
 
                     <View style={{ flexDirection: 'column', width: '100%', flex: 1 }}>
                         <ScrollView
+                            
                             refreshControl={
                                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                             }
@@ -259,7 +260,10 @@ const styles = StyleSheet.create({
         shadowRadius: 4.65,
 
         elevation: 6,
-    }
+    },
+    list: {
+         flex: 1
+      },
 });
 
 export default LoadingPage;
