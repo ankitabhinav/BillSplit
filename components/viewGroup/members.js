@@ -134,7 +134,7 @@ const Members = ({ members, created_by, group_id }) => {
                         <ListItem
                             key={i}
                             // leftAvatar={{ source: { uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' } }}
-                            leftIcon={{ name: 'account-circle-outline', type: 'material-community', size: 30 }}
+                            leftIcon={{ name: 'account-circle-outline', type: 'material-community', size: 40, color:'#9e9e9e' }}
                             title={item.email.split('@')[0]}
                             subtitle={item.email === created_by ? 'Admin' : 'Member'}
                             bottomDivider

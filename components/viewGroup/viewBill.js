@@ -20,7 +20,8 @@ const AddBill = (props) => {
     const [splitEqually, setSplitEqually] = useState(false);
     const [lent, setLent] = useState(false);
     const [descIcon, setDescIcon] = useState('file-document')
-   
+    const [showDelete, setShowDelete] = useState(false);
+
 
     useEffect(() => {
         console.log(props)
@@ -173,6 +174,67 @@ const AddBill = (props) => {
 
     }
 
+    const handleViewLayout = (event) => {
+        console.log('view layout fired')
+        var { x, y, width, height } = event.nativeEvent.layout;
+        console.log(x, y, width, height);
+    }
+
+    const handleDelete = () => {
+        setShowDelete(true);
+    }
+
+    const confirmDelete = async () => {
+        let item = {
+            "started_by": props.started_by,
+            "amount": props.amount,
+            "type": props.type,
+            "purpose": props.description,
+            "to": props.to
+        }
+
+        //axios does not support request body in delete mode , thats why we need to send body inside data 
+        try {
+            let response = await api.delete('/groups/transaction/delete',
+                {
+                    data: {
+                        group_id: props.group_id,
+                        transaction: item
+                    }
+                }
+            );
+            console.log(response.data)
+            if (response.data.success === true) {
+                props.refresh();
+                props.onPress();
+
+                return Alert.alert(
+                    'Deleted !',
+                    'Bill Deleted Successfully',
+                    [
+                        { text: 'OK' },
+                    ],
+                    { cancelable: false },
+                );
+               
+            } else {
+                return alert(response.data.status)
+            }
+        } catch (err) {
+            Alert.alert(
+                'Error',
+                'Something went wrong !',
+                [
+                    { text: 'OK' },
+                ],
+                { cancelable: false },
+            );
+            // return console.log(err.response.data.status)
+        }
+
+        console.log(item);
+    }
+
 
     return (
         <Overlay
@@ -183,99 +245,125 @@ const AddBill = (props) => {
             onBackdropPress={props.onPress}
 
         >
-            <View style={{ width: 300, marginBottom: 10 }}>
-                <View style={{ flexDirection: 'row' }}>
-                    <Text h4 style={{ marginHorizontal: 10, marginVertical: 10, fontWeight: '100' }}>View Bill</Text>
-                    {spinner &&
-                    <View style={{ justifyContent: 'center', flex: 1 }}>
-                        <TouchableOpacity onPress={() => setSpinner(false)}>
-                            <Icon style={{ alignSelf: 'flex-end', marginHorizontal: 10 }} name='square-edit-outline' size={20} />
+            <>
+                {!showDelete &&
+                    <View style={{ width: 300, marginBottom: 10 }} onLayout={handleViewLayout}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text h4 style={{ marginHorizontal: 10, marginVertical: 10, fontWeight: '100' }}>View Bill</Text>
+                            {spinner &&
+                                <View style={{ justifyContent: 'center', flex: 1 }}>
+                                    <TouchableOpacity onPress={() => setSpinner(false)}>
+                                        <Icon style={{ alignSelf: 'flex-end', marginHorizontal: 10 }} name='square-edit-outline' size={20} />
 
-                        </TouchableOpacity>
+                                    </TouchableOpacity>
+
+                                </View>
+                            }
+
+
+                        </View>
+
+
+
+                        <Input
+                            placeholder='Enter Description For Bill'
+                            errorStyle={{ color: 'red' }}
+                            errorMessage={errorType === 'billDescError' ? errorMessage : null}
+                            onChangeText={handleBillDescriptionInput}
+                            disabled={spinner}
+                            value={billDescriptionInput}
+                            leftIcon={{ type: 'material-community', name: descIcon, color: '#607d8b' }}
+
+                        />
+
+                        <Input
+                            placeholder='Enter Amount'
+                            errorStyle={{ color: 'red' }}
+                            errorMessage={errorType === 'billAmountError' ? errorMessage : null}
+                            onChangeText={handleBillAmountInput}
+                            disabled={spinner}
+                            value={billAmountInput}
+                            keyboardType='numeric'
+                            leftIcon={{ type: 'material-community', name: 'currency-inr', color: '#607d8b' }}
+
+                        />
+
+
+                        <CheckBox
+                            title='Split Equally'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={splitEqually}
+                            onPress={() => { setSplitEqually(true); setLent(false); }}
+                            disabled={spinner}
+                        />
+                        <CheckBox
+                            title='Lent'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={lent}
+                            onPress={() => { setSplitEqually(false); setLent(true); }}
+                            disabled={spinner}
+                        />
+
+                        {lent &&
+                            <Input
+                                placeholder='Enter borrower email adress'
+                                errorStyle={{ color: 'red' }}
+                                errorMessage={errorType === 'lentToError' ? errorMessage : null}
+                                onChangeText={handleLentToInput}
+                                disabled={spinner}
+                                value={lentToInput}
+                                leftIcon={{ type: 'material-community', name: 'at', color: '#607d8b' }}
+
+                            />}
+
+                        {!spinner &&
+                            <Button
+                                title="Update"
+                                // loading={spinner}
+                                containerStyle={{ width: '40%', alignSelf: 'center' }}
+                                raised={true}
+                                onPress={handleSubmit}
+
+                            />
+                        }
+
+                        {spinner && <Button
+                            title="Delete"
+                            // loading={spinner}
+                            containerStyle={{ width: '40%', alignSelf: 'center' }}
+                            raised={true}
+                            onPress={handleDelete}
+
+                        />}
 
                     </View>
-                    }
-
-
-                </View>
-
-
-
-                <Input
-                    placeholder='Enter Description For Bill'
-                    errorStyle={{ color: 'red' }}
-                    errorMessage={errorType === 'billDescError' ? errorMessage : null}
-                    onChangeText={handleBillDescriptionInput}
-                    disabled={spinner}
-                    value={billDescriptionInput}
-                    leftIcon={{ type: 'material-community', name: descIcon, color: '#607d8b' }}
-
-                />
-
-                <Input
-                    placeholder='Enter Amount'
-                    errorStyle={{ color: 'red' }}
-                    errorMessage={errorType === 'billAmountError' ? errorMessage : null}
-                    onChangeText={handleBillAmountInput}
-                    disabled={spinner}
-                    value={billAmountInput}
-                    keyboardType='numeric'
-                    leftIcon={{ type: 'material-community', name: 'currency-inr', color: '#607d8b' }}
-
-                />
-
-
-                <CheckBox
-                    title='Split Equally'
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={splitEqually}
-                    onPress={() => { setSplitEqually(true); setLent(false); }}
-                    disabled={spinner}
-                />
-                <CheckBox
-                    title='Lent'
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={lent}
-                    onPress={() => { setSplitEqually(false); setLent(true); }}
-                    disabled={spinner}
-                />
-
-                {lent &&
-                    <Input
-                        placeholder='Enter borrower email adress'
-                        errorStyle={{ color: 'red' }}
-                        errorMessage={errorType === 'lentToError' ? errorMessage : null}
-                        onChangeText={handleLentToInput}
-                        disabled={spinner}
-                        value={lentToInput}
-                        leftIcon={{ type: 'material-community', name: 'at', color: '#607d8b' }}
-
-                    />}
-
-                {!spinner &&
-                    <Button
-                        title="Update"
-                        // loading={spinner}
-                        containerStyle={{ width: '40%', alignSelf: 'center' }}
-                        raised={true}
-                        onPress={handleSubmit}
-
-                    />
                 }
+                {showDelete &&
+                    <View style={{ width: 300, height: 360, marginBottom: 10, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text h5>Are you sure you want to delete this bill ?</Text>
+                        <View style={{ flexDirection: 'row', width: 300, justifyContent: 'center' }}>
+                            <Button
+                                title="Yes"
+                                // loading={spinner}
+                                containerStyle={{ width: '20%', margin: 10 }}
+                                raised={true}
+                                onPress={confirmDelete}
+                            />
+                            <Button
+                                title="No"
+                                // loading={spinner}
+                                containerStyle={{ width: '20%', margin: 10 }}
+                                raised={true}
+                                onPress={() => setShowDelete(false)}
 
-              {spinner&&  <Button
-                    title="Delete"
-                    // loading={spinner}
-                    containerStyle={{ width: '40%', alignSelf: 'center' }}
-                    raised={true}
-                // onPress={handleSubmit}
+                            />
+                        </View>
 
-                />}
-
-            </View>
-
+                    </View>
+                }
+            </>
         </Overlay>
     )
 }
