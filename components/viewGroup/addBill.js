@@ -3,6 +3,9 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { Input, Button, Text, Card, Overlay, CheckBox } from 'react-native-elements'
 import api from '../api'
 import AsyncStorage from '@react-native-community/async-storage';
+import {getIcons} from '../customIcon'
+
+
 
 
 const AddBill = (props) => {
@@ -29,55 +32,10 @@ const AddBill = (props) => {
 
     const handleBillDescriptionInput = (e) => {
         setBillDescriptionInput(e)
-       // let res = e.match(/\bmovie|\bfood|\brecharge|\bgrocery|\brent|\bmedicine|\bmedical|\bcab|\bauto|\btaxi|\bbus|\bpetrol|\bdiesel|\bplane|\bflight|\belectricity|\bwater|\bgas|\binternet|\bnet|\bwifi|\bbroadband/gi)
-       // if(!res) return setDescIcon('file-document')
-
-        if(e.match(/cab|auto|taxi|bus/)) {
-            setDescIcon('taxi')
-        } else
-        
-        if(e.match(/electricity/)) {
-            setDescIcon('flash')
-        } else
-        
-        if(e.match(/petrol|diesel|cng/)) {
-            setDescIcon('gas-station')
-        } else
-
-        if(e.match(/medicine|doctor|hospital/)) {
-            setDescIcon('stethoscope')
-        } else
-
-        if(e.match(/plane|flight|aeroplane|airplane/)) {
-            setDescIcon('airplane')
-        } else
-
-        if(e.match(/water/)) {
-            setDescIcon('water')
-        } else
-
-        if(e.match(/rent/)) {
-            setDescIcon('home')
-        } else
-
-        if(e.match(/grocery|shop|shopping/)) {
-            setDescIcon('cart')
-        } else
-
-        if(e.match(/wifi|net|internet|broadband/)) {
-            setDescIcon('flash')
-        } else
-
-        if(e.match(/food|burger|bread|drink/)) {
-            setDescIcon('food')
-        } else 
-        {
-            setDescIcon('file-document')
-        }
-       
-        
-
+        let iconname = getIcons(e); 
+        setDescIcon(iconname);
     }
+    
     const handleBillNameInput = (e) => {
         setBillNameInput(e)
     }

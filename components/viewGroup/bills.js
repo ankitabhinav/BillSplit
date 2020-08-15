@@ -4,6 +4,7 @@ import {ListItem, Icon} from 'react-native-elements'
 import AddBill from './addBill'
 import ViewBill from './viewBill' 
 import api from '../api'
+import {getIcons} from '../customIcon'
 
 
 const Bills = ({ bills, created_by, group_id }) => {
@@ -80,76 +81,7 @@ const Bills = ({ bills, created_by, group_id }) => {
         getTransactions();
     }
 
-    const BillIcon = (props) => {
-
-       const [descIcon, setDescIcon] = useState('file-document')
-       useEffect(() => {
-        let icon = getIcon(props.name);
-        setDescIcon(icon);
-       },[])       
-
-      const getIcon = (e) => {
-        if(e.match(/cab|auto|taxi|bus/)) {
-            return 'taxi'
-        } else
-        
-        if(e.match(/electricity/)) {
-            return 'flash'
-        } else
-        
-        if(e.match(/petrol|diesel|cng/)) {
-            return 'gas-station'
-        } else
-
-        if(e.match(/medicine|doctor|hospital/)) {
-            return 'stethoscope'
-        } else
-
-        if(e.match(/plane|flight|aeroplane|airplane/)) {
-            return 'airplane'
-        } else
-
-        if(e.match(/water/)) {
-            return 'water'
-        } else
-
-        if(e.match(/rent/)) {
-            return 'home'
-        } else
-
-        if(e.match(/grocery|shop|shopping/)) {
-            return 'cart'
-        } else
-
-        if(e.match(/wifi|net|internet|broadband/)) {
-            return 'flash'
-        } else
-
-        if(e.match(/food|burger|bread|drink/)) {
-            return 'food'
-        } else 
-        {
-            return 'file-document'
-        }
-      }
-      
-
-
-
-        return (
-          //  { name: 'file-document-edit-outline', type:'material-community', size:40 }
-            <Icon
-            name={descIcon}
-            type='material-community'
-            color='#9e9e9e'
-            size={40}
-            //raised={true}
-           // containerStyle={styles.submitButton}
-            //onPress={openAddBill}
-        />
-        )
-    }
-
+/* 
     const getIconDetail = (e) => {
         if(e.match(/cab|auto|taxi|bus/)) {
             return 'taxi'
@@ -194,7 +126,7 @@ const Bills = ({ bills, created_by, group_id }) => {
             return 'file-document'
         }
       }
-
+ */
 
     return (
 
@@ -217,7 +149,7 @@ const Bills = ({ bills, created_by, group_id }) => {
                     onPress={ () =>openViewBill(item)}
                     key={i}
                     //leftAvatar={{ source: { uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' } }}
-                    leftIcon={ { name: getIconDetail(item.purpose), type:'material-community', size:40, color:'#9e9e9e' }}
+                    leftIcon={ { name: getIcons(item.purpose), type:'material-community', size:40, color:'#9e9e9e' }}
                     title={'₹ '+item.amount + ' for '+item.purpose}
                     subtitle={
                         <View>
