@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
-import { Input, Button, Text, Card, Overlay, CheckBox, ListItem } from 'react-native-elements'
+import { StyleSheet, View, Alert, TouchableOpacity } from 'react-native';
+import { Input, Button, Text, Card, Overlay, CheckBox, ListItem, Icon } from 'react-native-elements'
 import api from '../api'
 import AsyncStorage from '@react-native-community/async-storage';
 import { getIcons } from '../customIcon'
@@ -231,7 +231,25 @@ const AddBill = (props) => {
                 }
                 {viewMembers &&
                     <View style={{ width: 300, height: 435, marginBottom: 10, }}>
-                        <Text h4 style={{ marginHorizontal: 10, marginVertical: 10, fontWeight: '100' }}>Select Member</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text h4 style={{ marginHorizontal: 10, marginVertical: 10, fontWeight: '100' }}>Select Member</Text>
+                            <View style={{ justifyContent: 'center', flex: 1 }}>
+                                <TouchableOpacity onPress={() => setViewMembers(false)}>
+                                    <Icon
+                                        name='arrow-left'
+                                        type='material-community'
+                                        color='#424242'
+                                        //raised={true}
+                                        containerStyle={{marginRight:-40}}
+                                        //onPress={openAddBill}
+                                    />
+
+                                </TouchableOpacity>
+
+                            </View>
+
+
+                        </View>
 
                         <ScrollView>
                             {members &&
@@ -245,7 +263,7 @@ const AddBill = (props) => {
                                         bottomDivider
                                         style={{ marginVertical: 2, marginHorizontal: 2 }}
                                         //rightIcon={() => right(item.email)}
-                                        onPress={() =>  {setLentToInput(item.email); setViewMembers(false)} }
+                                        onPress={() => { setLentToInput(item.email); setViewMembers(false) }}
                                     />
                                 ))
                             }
