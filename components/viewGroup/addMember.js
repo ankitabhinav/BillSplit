@@ -60,7 +60,7 @@ const AddMember = (props) => {
                 setSpinner(false);
                 return  Alert.alert(
                     'Error',
-                    'Something went wrong !',
+                    response.data.status,
                     [
                         { text: 'OK' },
                     ],
