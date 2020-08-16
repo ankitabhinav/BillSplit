@@ -5,12 +5,14 @@ import { DrawerLayoutAndroid } from 'react-native';
 import DrawerItem from './drawerItem'
 import AsyncStorage from '@react-native-community/async-storage';
 import * as RootNavigation from '../../RootNavigation.js';
+import MyQrCode from './myQrCode'
 
 
 
 const Navigation = (props) => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(null);
+    const [qrModal, setQrModal] = useState(false);
     var _drawer = useRef(null);
 
     useEffect(() => {
@@ -79,6 +81,11 @@ const Navigation = (props) => {
         RootNavigation.navigate('ViewGroup');
     }
 
+    const handleQrCode = () => {
+        closeDrawerNavigation();
+        setQrModal(!qrModal);
+    }
+
 
 
 
@@ -116,7 +123,12 @@ const Navigation = (props) => {
 
             {isLoggedIn &&
                 <React.Fragment>
-                   
+                     <DrawerItem
+                        name='My QR Code'
+                        icon='qrcode'
+                        iconType='material-community'
+                        onPress={handleQrCode}
+                    />
                     <DrawerItem
                         name='Log Out'
                         icon='logout'
@@ -149,6 +161,9 @@ const Navigation = (props) => {
             onDrawerOpen={onDrawerOpen}
         >
             {props.children}
+            {qrModal &&
+                <MyQrCode onPress={handleQrCode}/>
+            }
 
         </DrawerLayoutAndroid>
 
