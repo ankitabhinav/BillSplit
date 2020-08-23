@@ -103,8 +103,8 @@ const AddBill = (props) => {
     }
 
 
-    const handleSubmit = async () => {
-        return
+    const handleUpdate = async () => {
+       // return
         if (billDescriptionInput === null || billDescriptionInput.length < 1) {
             setErrorType('billDescError')
             return setErrorMessage('Bill description is empty')
@@ -119,15 +119,16 @@ const AddBill = (props) => {
             setErrorType('lentToError')
             return setErrorMessage('Borrower email is empty')
         }
-        setErrorMessage({ type: null, message: null });
+        setErrorMessage('');
 
         // console.log('member : ' + memberEmail + 'id : ' + props.group_id)
 
         try {
             setSpinner(true);
 
-            let response = await api.post('/groups/transaction/add', {
+            let response = await api.put('/groups/transaction/update', {
                 group_id: props.group_id,
+                transaction:{started_by:props.started_by, amount:props.amount, type:props.type, purpose:props.description, to: props.to},
                 amount: billAmountInput,
                 type: splitEqually ? 'split' : 'lent',
                 purpose: billDescriptionInput,
@@ -139,10 +140,10 @@ const AddBill = (props) => {
             if (response.data.success === true) {
                 setSpinner(false);
                 props.onPress();
-                // props.refresh();
+                props.refresh();
                 return Alert.alert(
                     'Success',
-                    'Bill Added',
+                    'Bill Updated',
                     [
                         { text: 'OK' },
                     ],
@@ -268,7 +269,7 @@ const AddBill = (props) => {
                         <Input
                             placeholder='Enter Description For Bill'
                             errorStyle={{ color: 'red' }}
-                            errorMessage={errorType === 'billDescError' ? errorMessage : null}
+                            errorMessage={errorType === 'billDescError' ? errorMessage : ''}
                             onChangeText={handleBillDescriptionInput}
                             disabled={spinner}
                             value={billDescriptionInput}
@@ -279,7 +280,7 @@ const AddBill = (props) => {
                         <Input
                             placeholder='Enter Amount'
                             errorStyle={{ color: 'red' }}
-                            errorMessage={errorType === 'billAmountError' ? errorMessage : null}
+                            errorMessage={errorType === 'billAmountError' ? errorMessage : ''}
                             onChangeText={handleBillAmountInput}
                             disabled={spinner}
                             value={billAmountInput}
@@ -310,7 +311,7 @@ const AddBill = (props) => {
                             <Input
                                 placeholder='Enter borrower email adress'
                                 errorStyle={{ color: 'red' }}
-                                errorMessage={errorType === 'lentToError' ? errorMessage : null}
+                                errorMessage={errorType === 'lentToError' ? errorMessage : ''}
                                 onChangeText={handleLentToInput}
                                 disabled={spinner}
                                 value={lentToInput}
@@ -324,7 +325,7 @@ const AddBill = (props) => {
                                 // loading={spinner}
                                 containerStyle={{ width: '40%', alignSelf: 'center' }}
                                 raised={true}
-                                onPress={handleSubmit}
+                                onPress={handleUpdate}
 
                             />
                         }

@@ -91,7 +91,7 @@ const AddBill = (props) => {
             setErrorType('lentToError')
             return setErrorMessage('Borrower email is empty')
         }
-        setErrorMessage({ type: null, message: null });
+        setErrorMessage('');
 
         // console.log('member : ' + memberEmail + 'id : ' + props.group_id)
 

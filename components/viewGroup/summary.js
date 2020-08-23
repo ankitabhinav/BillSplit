@@ -25,7 +25,6 @@ const Summary = ({ summary }) => {
                             //leftAvatar={{ source: { uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' } }}
                             leftIcon={{ name: getIcons(item.item), type: 'material-community', size: 40, color: '#9e9e9e' }}
                             title={item.item}
-                            //subtitle={<Text style={{color:'#f44336'}}>{summary.isSettled ? 'Settled' : 'Not Settled'}</Text>}
                             subtitle={<Badge status={summary.isSettled ? 'success' : 'warning'} value={<Text style={{ fontSize: 10, padding: 5 }}>{summary.isSettled ? 'Settled' : 'Not Settled'}</Text>} />}
                             bottomDivider
                             chevron
