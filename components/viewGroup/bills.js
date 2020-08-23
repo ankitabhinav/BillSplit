@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text,ScrollView, RefreshControl } from 'react-native'
-import {ListItem, Icon} from 'react-native-elements'
+import {ListItem, Icon,Badge} from 'react-native-elements'
 import AddBill from './addBill'
 import ViewBill from './viewBill' 
 import api from '../api'
@@ -21,7 +21,8 @@ const Bills = ({ bills, created_by, group_id }) => {
 
     useEffect(() => {
         console.log('bills loaded')
-        //console.log(bills)
+
+        console.log(bills)
     })
 
 
@@ -152,15 +153,23 @@ const Bills = ({ bills, created_by, group_id }) => {
                     leftIcon={ { name: getIcons(item.purpose), type:'material-community', size:40, color:'#9e9e9e' }}
                     title={'₹ '+item.amount + ' for '+item.purpose}
                     subtitle={
-                        <View>
+                        <>
+                        <View style={{flexDirection:'row', alignItems:'flex-start',width:'100%'}}>
                             {item.type === 'split' &&
-                                <Text style={{color:'#ff9800'}}>splitted equally</Text>
+                                 <Badge status='warning' value={<Text style={{ fontSize: 10, padding: 5 }}>Splitted Equally</Text>} />
                             }
                              {item.type === 'lent' &&
-                                <Text style={{color:'#f44336'}}>lent to {item.to}</Text>
+                                <Badge status='error' value={<Text style={{ fontSize: 10, padding: 5 }}>Lent</Text>} />
                             }
-                            <Text><Text>Added By</Text> <Text style={{color:'#757575', fontStyle:'italic'}}>{item.started_by}</Text></Text>
+                            <View style={{marginHorizontal:10}}>
+                            <Badge status={item.isSettled ? 'success' : 'warning'} value={<Text style={{ fontSize: 10, padding: 5 }}>{item.isSettled ? 'Settled' : 'Not Settled'}</Text>} />
+
+                            </View>
+
                         </View>
+                        <Text><Text>Added By</Text> <Text style={{color:'#757575', fontStyle:'italic'}}>{item.started_by}</Text></Text>
+
+                        </>
                     }
                     bottomDivider
                     chevron

@@ -330,14 +330,29 @@ const AddBill = (props) => {
                             />
                         }
 
-                        {spinner && <Button
+                        {spinner && 
+                        <>
+                        <View style={{flexDirection:'row', justifyContent:'center'}}>
+                        <Button
                             title="Delete"
                             // loading={spinner}
-                            containerStyle={{ width: '40%', alignSelf: 'center' }}
+                            containerStyle={{ width: '30%', alignSelf: 'center', marginRight:15 }}
                             raised={true}
                             onPress={handleDelete}
 
-                        />}
+                        />
+                         <Button
+                            title="Settle Bill"
+                            // loading={spinner}
+                            containerStyle={{ width: '30%', alignSelf: 'center' }}
+                            raised={true}
+                            //onPress={handleDelete}
+
+                        />
+                        </View>
+                       
+                        </>
+                        }
 
                     </View>
                 }
