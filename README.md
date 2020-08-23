@@ -10,10 +10,10 @@ How to use this repository:
 Features:
 
 1. Users can create a group , add members to the group using qr code of the members or directly adding email address.
-2.After adding a member he or she can add a bill
-3.App automatically sets an appropriate icon for the bill eg. car icon for cab, taxi etc.
-3.Then summary section shows who owes how much.
+2. After adding a member he or she can add a bill
+3. App automatically sets an appropriate icon for the bill eg. car icon for cab, taxi etc.
+4. Then summary section shows who owes how much.
 
-Upcomming Features :
+Upcoming Features :
 
 Graphs, charts, analytics, push notifications etc
