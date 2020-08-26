@@ -277,21 +277,42 @@ const AddBill = (props) => {
 
                 props.onPress();
                 props.refresh();
-                return alert('Bill Updated')
+                return  Alert.alert(
+                    'Success',
+                    props.isSettled ? 'Bill Unsettled' : 'Bill Settled',
+                    [
+                        { text: 'OK' },
+                    ],
+                    { cancelable: false },
+                );
             } else {
                 console.log(response.data);
                 setSettleSpinner(false);
             setLockFields(false);
 
 
-                return alert('something went wrong')
+                return  Alert.alert(
+                    'Error',
+                    'Something went wrong',
+                    [
+                        { text: 'OK' },
+                    ],
+                    { cancelable: false },
+                );
             }
         } catch (err) {
             console.log(err.response);
             setSettleSpinner(false);
             setLockFields(false);
 
-            return alert('Something went wrong !')
+            return  Alert.alert(
+                'Error',
+                'Something went wrong',
+                [
+                    { text: 'OK' },
+                ],
+                { cancelable: false },
+            );
         }
     }
 
@@ -411,7 +432,7 @@ const AddBill = (props) => {
                                         containerStyle={{ width: '30%', alignSelf: 'center' }}
                                         raised={true}
                                         onPress={handleBillSettle}
-                                        disabled={lockFields}
+                                        disabled={deleteSpinner ? true : false}
 
                                     />
                                 </View>
@@ -427,11 +448,11 @@ const AddBill = (props) => {
                         <View style={{ flexDirection: 'row', width: 300, justifyContent: 'center' }}>
                             <Button
                                 title="Yes"
-                                // loading={spinner}
+                                loading={deleteSpinner}
                                 containerStyle={{ width: '20%', margin: 10 }}
                                 raised={true}
                                 onPress={confirmDelete}
-                                disabled={lockFields}
+                                //disabled={lockFields}
                             />
                             <Button
                                 title="No"
@@ -439,7 +460,7 @@ const AddBill = (props) => {
                                 containerStyle={{ width: '20%', margin: 10 }}
                                 raised={true}
                                 onPress={() => setShowDelete(false)}
-                                disabled={lockFields}
+                                disabled={deleteSpinner ? true : false}
 
                             />
                         </View>
