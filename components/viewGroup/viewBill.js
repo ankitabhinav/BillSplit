@@ -22,6 +22,10 @@ const AddBill = (props) => {
     const [descIcon, setDescIcon] = useState('file-document')
     const [showDelete, setShowDelete] = useState(false);
 
+    const [settleSpinner, setSettleSpinner] = useState(false);
+    const [deleteSpinner, setDeleteSpinner] = useState(false);
+    const [lockFields, setLockFields] = useState(false);
+
 
     useEffect(() => {
         console.log(props)
@@ -104,7 +108,7 @@ const AddBill = (props) => {
 
 
     const handleUpdate = async () => {
-       // return
+        // return
         if (billDescriptionInput === null || billDescriptionInput.length < 1) {
             setErrorType('billDescError')
             return setErrorMessage('Bill description is empty')
@@ -125,10 +129,11 @@ const AddBill = (props) => {
 
         try {
             setSpinner(true);
+           // setLockFields(true);
 
             let response = await api.put('/groups/transaction/update', {
                 group_id: props.group_id,
-                transaction:{started_by:props.started_by, amount:props.amount, type:props.type, purpose:props.description, to: props.to},
+                transaction: { started_by: props.started_by, amount: props.amount, type: props.type, purpose: props.description, to: props.to },
                 amount: billAmountInput,
                 type: splitEqually ? 'split' : 'lent',
                 purpose: billDescriptionInput,
@@ -139,6 +144,8 @@ const AddBill = (props) => {
 
             if (response.data.success === true) {
                 setSpinner(false);
+            setLockFields(false);
+
                 props.onPress();
                 props.refresh();
                 return Alert.alert(
@@ -151,6 +158,8 @@ const AddBill = (props) => {
                 );
             } else {
                 setSpinner(false);
+            setLockFields(false);
+
                 return Alert.alert(
                     'Error',
                     'Something went wrong !',
@@ -163,6 +172,8 @@ const AddBill = (props) => {
         } catch (err) {
             console.log(err.response.data)
             setSpinner(false);
+            setLockFields(false);
+
             return Alert.alert(
                 'Error',
                 'Something went wrong !!',
@@ -196,6 +207,9 @@ const AddBill = (props) => {
 
         //axios does not support request body in delete mode , thats why we need to send body inside data 
         try {
+            setDeleteSpinner(true);
+           // setLockFields(true);
+
             let response = await api.delete('/groups/transaction/delete',
                 {
                     data: {
@@ -206,6 +220,9 @@ const AddBill = (props) => {
             );
             console.log(response.data)
             if (response.data.success === true) {
+                setDeleteSpinner(false);
+            setLockFields(false);
+
                 props.refresh();
                 props.onPress();
 
@@ -217,11 +234,15 @@ const AddBill = (props) => {
                     ],
                     { cancelable: false },
                 );
-               
+
             } else {
                 return alert(response.data.status)
             }
         } catch (err) {
+            setDeleteSpinner(false);
+            setLockFields(false);
+
+
             Alert.alert(
                 'Error',
                 'Something went wrong !',
@@ -234,6 +255,44 @@ const AddBill = (props) => {
         }
 
         console.log(item);
+    }
+
+
+    const handleBillSettle = async () => {
+        console.log('settle called')
+        setSettleSpinner(true);
+
+       // setLockFields(true);
+
+        try {
+            let response = await api.put('/groups/transaction/settle', {
+                group_id: props.group_id,
+                transaction: { started_by: props.started_by, amount: props.amount, type: props.type, purpose: props.description, to: props.to },
+                isSettled: props.isSettled ? false : true
+            })
+
+            if (response.data.success === true) {
+                setSettleSpinner(false);
+            setLockFields(false);
+
+                props.onPress();
+                props.refresh();
+                return alert('Bill Updated')
+            } else {
+                console.log(response.data);
+                setSettleSpinner(false);
+            setLockFields(false);
+
+
+                return alert('something went wrong')
+            }
+        } catch (err) {
+            console.log(err.response);
+            setSettleSpinner(false);
+            setLockFields(false);
+
+            return alert('Something went wrong !')
+        }
     }
 
 
@@ -252,13 +311,16 @@ const AddBill = (props) => {
                         <View style={{ flexDirection: 'row' }}>
                             <Text h4 style={{ marginHorizontal: 10, marginVertical: 10, fontWeight: '100' }}>View Bill</Text>
                             {spinner &&
-                                <View style={{ justifyContent: 'center', flex: 1 }}>
-                                    <TouchableOpacity onPress={() => setSpinner(false)}>
-                                        <Icon style={{ alignSelf: 'flex-end', marginHorizontal: 10 }} name='square-edit-outline' size={20} />
+                                <>
+                                    {!props.isSettled &&
+                                    <View style={{ justifyContent: 'center', flex: 1 }}>
+                                        <TouchableOpacity onPress={() => {settleSpinner ? null : setSpinner(false)}}>
+                                            <Icon style={{ alignSelf: 'flex-end', marginHorizontal: 10 }} name='square-edit-outline' size={20} />
+                                        </TouchableOpacity>
 
-                                    </TouchableOpacity>
-
-                                </View>
+                                    </View>
+                                    }
+                                </>
                             }
 
 
@@ -322,36 +384,39 @@ const AddBill = (props) => {
                         {!spinner &&
                             <Button
                                 title="Update"
-                                // loading={spinner}
+                                loading={spinner}
                                 containerStyle={{ width: '40%', alignSelf: 'center' }}
                                 raised={true}
                                 onPress={handleUpdate}
+                                disabled={lockFields}
 
                             />
                         }
 
-                        {spinner && 
-                        <>
-                        <View style={{flexDirection:'row', justifyContent:'center'}}>
-                        <Button
-                            title="Delete"
-                            // loading={spinner}
-                            containerStyle={{ width: '30%', alignSelf: 'center', marginRight:15 }}
-                            raised={true}
-                            onPress={handleDelete}
+                        {spinner &&
+                            <>
+                                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                                    <Button
+                                        title="Delete"
+                                        loading={deleteSpinner}
+                                        containerStyle={{ width: '30%', alignSelf: 'center', marginRight: 15 }}
+                                        raised={true}
+                                        onPress={handleDelete}
+                                        disabled={settleSpinner ? true : false}
 
-                        />
-                         <Button
-                            title="Settle Bill"
-                            // loading={spinner}
-                            containerStyle={{ width: '30%', alignSelf: 'center' }}
-                            raised={true}
-                            //onPress={handleDelete}
+                                    />
+                                    <Button
+                                        title={props.isSettled ? "Unsettle" : "Settle"}
+                                        loading={settleSpinner}
+                                        containerStyle={{ width: '30%', alignSelf: 'center' }}
+                                        raised={true}
+                                        onPress={handleBillSettle}
+                                        disabled={lockFields}
 
-                        />
-                        </View>
-                       
-                        </>
+                                    />
+                                </View>
+
+                            </>
                         }
 
                     </View>
@@ -366,6 +431,7 @@ const AddBill = (props) => {
                                 containerStyle={{ width: '20%', margin: 10 }}
                                 raised={true}
                                 onPress={confirmDelete}
+                                disabled={lockFields}
                             />
                             <Button
                                 title="No"
@@ -373,6 +439,7 @@ const AddBill = (props) => {
                                 containerStyle={{ width: '20%', margin: 10 }}
                                 raised={true}
                                 onPress={() => setShowDelete(false)}
+                                disabled={lockFields}
 
                             />
                         </View>

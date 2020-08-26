@@ -136,7 +136,7 @@ const Bills = ({ bills, created_by, group_id }) => {
                 <AddBill onPress={hideAddBill} refresh={() => handleRefresh()} group_id={group_id} />
              }
              {viewBillModalState &&
-                <ViewBill onPress={hideViewBill} refresh={() => handleRefresh()} group_id={group_id} amount={viewBillDetail.amount} description={viewBillDetail.purpose} type={viewBillDetail.type} to={viewBillDetail.to ? viewBillDetail.to : null} started_by={viewBillDetail.started_by} />
+                <ViewBill onPress={hideViewBill} refresh={() => handleRefresh()} group_id={group_id} isSettled={viewBillDetail.isSettled} amount={viewBillDetail.amount} description={viewBillDetail.purpose} type={viewBillDetail.type} to={viewBillDetail.to ? viewBillDetail.to : null} started_by={viewBillDetail.started_by} />
              }
             <ScrollView
             
