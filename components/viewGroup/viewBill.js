@@ -460,7 +460,7 @@ const AddBill = (props) => {
                                 containerStyle={{ width: '20%', margin: 10 }}
                                 raised={true}
                                 onPress={() => setShowDelete(false)}
-                                disabled={deleteSpinner ? true : false}
+                               // disabled={deleteSpinner ? true : false}
 
                             />
                         </View>
