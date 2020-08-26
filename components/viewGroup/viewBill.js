@@ -144,7 +144,7 @@ const AddBill = (props) => {
 
             if (response.data.success === true) {
                 setSpinner(false);
-            setLockFields(false);
+            //setLockFields(false);
 
                 props.onPress();
                 props.refresh();
@@ -158,7 +158,7 @@ const AddBill = (props) => {
                 );
             } else {
                 setSpinner(false);
-            setLockFields(false);
+           // setLockFields(false);
 
                 return Alert.alert(
                     'Error',
@@ -172,7 +172,7 @@ const AddBill = (props) => {
         } catch (err) {
             console.log(err.response.data)
             setSpinner(false);
-            setLockFields(false);
+           // setLockFields(false);
 
             return Alert.alert(
                 'Error',
@@ -221,7 +221,7 @@ const AddBill = (props) => {
             console.log(response.data)
             if (response.data.success === true) {
                 setDeleteSpinner(false);
-            setLockFields(false);
+            //setLockFields(false);
 
                 props.refresh();
                 props.onPress();
@@ -240,7 +240,7 @@ const AddBill = (props) => {
             }
         } catch (err) {
             setDeleteSpinner(false);
-            setLockFields(false);
+           // setLockFields(false);
 
 
             Alert.alert(
@@ -273,7 +273,7 @@ const AddBill = (props) => {
 
             if (response.data.success === true) {
                 setSettleSpinner(false);
-            setLockFields(false);
+          //  setLockFields(false);
 
                 props.onPress();
                 props.refresh();
@@ -288,7 +288,7 @@ const AddBill = (props) => {
             } else {
                 console.log(response.data);
                 setSettleSpinner(false);
-            setLockFields(false);
+          //  setLockFields(false);
 
 
                 return  Alert.alert(
@@ -303,7 +303,7 @@ const AddBill = (props) => {
         } catch (err) {
             console.log(err.response);
             setSettleSpinner(false);
-            setLockFields(false);
+           // setLockFields(false);
 
             return  Alert.alert(
                 'Error',
