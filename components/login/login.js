@@ -3,10 +3,11 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { Input, Button, Text } from 'react-native-elements'
 import api from '../api'
 import AsyncStorage from '@react-native-community/async-storage';
+import Register from './register'
+import { TouchableOpacity } from 'react-native'
 
 
-
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
     const input = React.createRef();
     const [emailFocus, setEmailFocus] = useState(false);
     const [passwordFocus, setPasswordFocus] = useState(false);
@@ -16,10 +17,12 @@ const Login = ({navigation}) => {
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
 
+    const [showRegister, setShowRegister] = useState(false);
+
     useEffect(() => {
         navigation.addListener('beforeRemove', (e) => {
             // Prevent default behavior of leaving the screen
-        e.preventDefault();
+            e.preventDefault();
         })
         console.log('login page loaded')
         checkLocalStorage();
@@ -50,7 +53,7 @@ const Login = ({navigation}) => {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
             return (true)
         }
-        
+
         return (false)
     }
 
@@ -62,11 +65,11 @@ const Login = ({navigation}) => {
             return alert('enter email and password to continue');
         }
 
-        if(!ValidateEmail(email)) {
+        if (!ValidateEmail(email)) {
             setSpinner(false);
             return alert("You have entered an invalid email address!");
         }
-        
+
         try {
             let response = await api.post('/login', {
                 email: email,
@@ -89,7 +92,7 @@ const Login = ({navigation}) => {
                     ],
                     { cancelable: false },
                 );
-                
+
             }
             console.log(response.data);
 
@@ -115,43 +118,57 @@ const Login = ({navigation}) => {
 
     return (
         <React.Fragment>
-            {!isLoggedIn &&
-
-                <View style={styles.container}>
-                    <View style={{ marginTop: 30, marginHorizontal: 10 }}>
-                        <Input
-                            placeholder='email@address.com'
-                            leftIcon={{ type: 'material-community', name: 'email', color: emailFocus ? '#42a5f5' : '#607d8b' }}
-                            label="Your Email Address"
-                            labelStyle={{ color: emailFocus ? '#42a5f5' : '#607d8b' }}
-                            onFocus={() => setEmailFocus(true)}
-                            onBlur={() => setEmailFocus(false)}
-                            inputContainerStyle={{ borderBottomColor: emailFocus ? '#42a5f5' : '##0a4ae' }}
-                            onChangeText={handleEmail}
-                        />
-                        <Input
-                            placeholder='Password'
-                            leftIcon={{ type: 'material-community', name: 'lock', color: passwordFocus ? '#42a5f5' : '#607d8b' }}
-                            label="Password"
-                            secureTextEntry={true}
-                            labelStyle={{ color: passwordFocus ? '#42a5f5' : '#607d8b' }}
-                            onFocus={() => setPasswordFocus(true)}
-                            onBlur={() => setPasswordFocus(false)}
-                            inputContainerStyle={{ borderBottomColor: passwordFocus ? '#42a5f5' : '#90a4ae' }}
-                            onChangeText={handlePassword}
-                        />
-                        <Button
-                            title="Login"
-                            loading={spinner}
-                            containerStyle={{ width: '40%', alignSelf: 'center' }}
-                            raised={true}
-                            onPress={handleLogin}
-
-                        />
-                    </View>
-
-                </View>
+            {showRegister &&
+                <Register handlePress={() => setShowRegister(false)} />
             }
+            {!showRegister &&
+                <>
+                    {!isLoggedIn &&
+
+                        <View style={{ flexDirection: 'column', width: '100%', flex: 1, backgroundColor: '#fff' }}>
+                            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                                <Text h3 style={{ marginHorizontal: 10, marginVertical: 10 }}>Log In</Text>
+
+                                <Input
+                                    placeholder='email@address.com'
+                                    leftIcon={{ type: 'material-community', name: 'email', color: emailFocus ? '#42a5f5' : '#607d8b' }}
+                                    label="Your Email Address"
+                                    labelStyle={{ color: emailFocus ? '#42a5f5' : '#607d8b' }}
+                                    onFocus={() => setEmailFocus(true)}
+                                    onBlur={() => setEmailFocus(false)}
+                                    inputContainerStyle={{ borderBottomColor: emailFocus ? '#42a5f5' : '##0a4ae' }}
+                                    onChangeText={handleEmail}
+                                />
+                                <Input
+                                    placeholder='Password'
+                                    leftIcon={{ type: 'material-community', name: 'lock', color: passwordFocus ? '#42a5f5' : '#607d8b' }}
+                                    label="Password"
+                                    secureTextEntry={true}
+                                    labelStyle={{ color: passwordFocus ? '#42a5f5' : '#607d8b' }}
+                                    onFocus={() => setPasswordFocus(true)}
+                                    onBlur={() => setPasswordFocus(false)}
+                                    inputContainerStyle={{ borderBottomColor: passwordFocus ? '#42a5f5' : '#90a4ae' }}
+                                    onChangeText={handlePassword}
+                                />
+                                <Button
+                                    title="Login"
+                                    loading={spinner}
+                                    containerStyle={{ width: '40%', alignSelf: 'center' }}
+                                    raised={true}
+                                    onPress={handleLogin}
+
+                                />
+                                <TouchableOpacity onPress={()=>setShowRegister(true)}>
+                                <Text style={{ alignSelf: 'center', marginVertical: 20, color: 'blue' }}>Click here to Register</Text>
+
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+                    }
+                </>
+            }
+
             {isLoggedIn &&
                 <Text>Already Logged In</Text>
             }

@@ -6,7 +6,7 @@ const DrawerItem = (props) => {
     return (
         <>
             <TouchableOpacity onPress={props.onPress}>
-            <View style={{ flexDirection: 'row', margin: 5, height: 40, justifyContent: 'flex-start', alignItems: 'center', borderRadius: 10 }}>
+            <View style={{ flexDirection: 'row', margin: 5, height: 40, justifyContent: 'flex-start', alignItems: 'center'}}>
                 <Icon
                     name={props.icon}
                     type={props.iconType}
@@ -14,9 +14,11 @@ const DrawerItem = (props) => {
                     style={{ marginHorizontal: 5 }}
                 />
                 <Text>{props.name}</Text>
+
             </View>
+            <Divider style={{ backgroundColor: '#BDBDBD' }} />
+
             </TouchableOpacity>
-            <Divider style={{ backgroundColor: 'blue' }} />
         </>
     );
 

@@ -106,15 +106,10 @@ const Navigation = (props) => {
                 iconType='material-community'
                 onPress={() => console.log('pressed')}
             />
-            <DrawerItem
-                name='Account'
-                icon='face'
-                iconType='material-community'
-                onPress={() => console.log('pressed')}
-            />
+           
             {!isLoggedIn &&
                 <DrawerItem
-                    name='Log In'
+                    name='Log In / Register'
                     icon='login'
                     iconType='material-community'
                     onPress={gotoLogin}
