@@ -13,43 +13,8 @@ const Summary = ({ summary, group_id }) => {
 
     useEffect(() => {
         console.log('summary loaded');
-        calculateSummary();
-    },[])
-
-    const calculateSummary = async() => {
-        console.log('calculate summary called')
-        try {
-            let response = await api.post('/groups/calculate',{
-                group_id : group_id
-            });
-           // console.log(response.data);
-            if(response.data.success === true) {
-                setSummaryItems(response.data.data);
-                //console.log(response.data);
-                
-            } else {
-                return  Alert.alert(
-                    'Error',
-                    'Something went wrong !',
-                    [
-                        { text: 'OK' },
-                    ],
-                    { cancelable: false },
-                );
-            }
-
-        }catch(err) {
-            console.log(err.response.data);
-            return  Alert.alert(
-                'Error',
-                'Something went wrong !!',
-                [
-                    { text: 'OK' },
-                ],
-                { cancelable: false },
-            );
-        }
-    }
+       
+    })
 
 
 
@@ -59,13 +24,13 @@ const Summary = ({ summary, group_id }) => {
             <ScrollView>
 
                 {summaryItems &&
-                    summaryItems.map((item, i) => {
+                    summary.map((item, i) => {
                         return <ListItem
                             key={i}
                             //leftAvatar={{ source: { uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' } }}
                             leftIcon={{ name: getIcons(item.item), type: 'material-community', size: 40, color: '#9e9e9e' }}
                             title={item.item}
-                            subtitle={<Badge status={summaryItems.isSettled ? 'success' : 'warning'} value={<Text style={{ fontSize: 10, padding: 5 }}>{summaryItems.isSettled ? 'Settled' : 'Not Settled'}</Text>} />}
+                            subtitle={<Badge status={item.isSettled ? 'success' : 'warning'} value={<Text style={{ fontSize: 10, padding: 5 }}>{item.isSettled ? 'Settled' : 'Not Settled'}</Text>} />}
                             bottomDivider
                             chevron
                             style={{ marginVertical: 2, marginHorizontal: 2 }}

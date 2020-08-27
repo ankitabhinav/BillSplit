@@ -193,6 +193,9 @@ const AddBill = (props) => {
     }
 
     const handleDelete = () => {
+        if(settleSpinner) {
+            return console.log('cannot delete when right now')
+        }
         setShowDelete(true);
     }
 
@@ -320,7 +323,7 @@ const AddBill = (props) => {
     return (
         <Overlay
             isVisible={true}
-            windowBackgroundColor="rgba(255, 255, 255, .5)"
+            windowBackgroundColor="rgba(255, 255, 255, 0.5)"
             overlayBackgroundColor="red"
             animationType='fade'
             onBackdropPress={props.onPress}
@@ -406,10 +409,10 @@ const AddBill = (props) => {
                             <Button
                                 title="Update"
                                 loading={spinner}
-                                containerStyle={{ width: '40%', alignSelf: 'center' }}
+                                containerStyle={{ width: '40%', alignSelf: 'center',marginVertical:5 }}
                                 raised={true}
                                 onPress={handleUpdate}
-                                disabled={lockFields}
+                                //disabled={lockFields}
 
                             />
                         }
@@ -423,7 +426,7 @@ const AddBill = (props) => {
                                         containerStyle={{ width: '30%', alignSelf: 'center', marginRight: 15 }}
                                         raised={true}
                                         onPress={handleDelete}
-                                        disabled={settleSpinner ? true : false}
+                                        //disabled={settleSpinner ? true : false}
 
                                     />
                                     <Button
@@ -432,7 +435,7 @@ const AddBill = (props) => {
                                         containerStyle={{ width: '30%', alignSelf: 'center' }}
                                         raised={true}
                                         onPress={handleBillSettle}
-                                        disabled={deleteSpinner ? true : false}
+                                       // disabled={deleteSpinner ? true : false}
 
                                     />
                                 </View>

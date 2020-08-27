@@ -53,6 +53,15 @@ const ViewGroup = (props) => {
         calculateSummary();
     }, [])
 
+    useEffect(() => {
+        if(index === 2) {
+            console.log('summary calculated')
+            calculateSummary();
+        }
+    },[index])
+
+    console.log(index);
+
 
     const FirstRoute = () => (
         <Bills bills={groups.transactions} created_by={groups.created_by} />

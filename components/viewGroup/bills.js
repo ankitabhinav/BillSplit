@@ -22,7 +22,7 @@ const Bills = ({ bills, created_by, group_id }) => {
     useEffect(() => {
         console.log('bills loaded')
 
-        console.log(bills)
+       // console.log(bills)
     })
 
 
