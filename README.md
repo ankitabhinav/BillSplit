@@ -1,6 +1,8 @@
 # BillSplit
 react native app to help individuals or a group to manage and track their common expenses.
 
+Direct APK : https://drive.google.com/file/d/1MX8_5itD6IRQ_7bmCBz9K83mCR4lLJrN/view?usp=sharing
+
 How to use this repository:
 
 1. clone it using "git clone https://github.com/ankitabhinav/BillSplit.git"
@@ -9,10 +11,14 @@ How to use this repository:
 
 Features:
 
-1. Users can create a group , add members to the group using qr code of the members or directly adding email address.
-2. After adding a member he or she can add a bill
-3. App automatically sets an appropriate icon for the bill eg. car icon for cab, taxi etc.
-4. Then summary section shows who owes how much.
+1. Log in or Register through app.
+2. Users can create a group.
+3. generate QR code of the logged in user 
+4. add members to the group using qr code of the members or directly typing email address.
+5. he or she can add a bill.
+6. automatically set appropriate icon for the bill while entering bill description eg. car icon for cab, taxi etc.
+7. edit bill, settle bill and delete bill.
+8. summary section shows who owes how much.
 
 Upcoming Features :
 
