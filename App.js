@@ -10,6 +10,7 @@ import DrawerNavigation from './components/drawerNavigation'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { navigationRef } from './RootNavigation';
 import { ThemeProvider } from 'react-native-elements'
+import codePush from "react-native-code-push";
 
 
 const Stack = createStackNavigator();
@@ -62,6 +63,8 @@ function App() {
   );
 }
 
-export default App;
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+
+export default codePush(codePushOptions)(App);
 
 

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BillSplit</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">zMj4N805nQZZNsSxH2CZSWAyHW1lzmmdLoSmb</string>
 </resources>
