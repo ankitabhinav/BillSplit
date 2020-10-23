@@ -25,7 +25,7 @@ const LoadingPage = (props) => {
     const [groups, setGroups] = useState(null);
     const [backup, setBackUp] = useState(null);
     const [modalState, setModalState] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
+    const [refreshing, setRefreshing] = useState(true);
     const [query, setQuery] = useState('')
 
     let avatars = [
@@ -44,6 +44,7 @@ const LoadingPage = (props) => {
     useEffect(() => {
         props.navigation.addListener('focus', () => {
             // do something
+            onRefresh();
             BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
           });
 

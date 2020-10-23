@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Members from './members'
 import Bills from './bills'
 import Summary from './summary'
+import Menu from './menu'
 
 
 
@@ -36,6 +37,7 @@ const ViewGroup = (props) => {
     const [summary, setSummary] = useState(null);
     const [modalState, setModalState] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
 
     const [index, setIndex] = useState(0);
     const [routes] = useState([
@@ -54,11 +56,11 @@ const ViewGroup = (props) => {
     }, [])
 
     useEffect(() => {
-        if(index === 2) {
+        if (index === 2) {
             console.log('summary calculated')
             calculateSummary();
         }
-    },[index])
+    }, [index])
 
     console.log(index);
 
@@ -76,18 +78,18 @@ const ViewGroup = (props) => {
         <Summary summary={summary} created_by={groups.created_by} />
     );
 
-    const calculateSummary = async() => {
+    const calculateSummary = async () => {
         try {
-            let response = await api.post('/groups/calculate',{
-                group_id : groups._id
+            let response = await api.post('/groups/calculate', {
+                group_id: groups._id
             });
-           // console.log(response.data);
-            if(response.data.success === true) {
+            // console.log(response.data);
+            if (response.data.success === true) {
                 setSummary(response.data.data);
                 //console.log(response.data);
-                
+
             } else {
-                return  Alert.alert(
+                return Alert.alert(
                     'Error',
                     'Something went wrong !',
                     [
@@ -97,9 +99,9 @@ const ViewGroup = (props) => {
                 );
             }
 
-        }catch(err) {
+        } catch (err) {
             console.log(err.response.data);
-            return  Alert.alert(
+            return Alert.alert(
                 'Error',
                 'Something went wrong !!',
                 [
@@ -154,18 +156,25 @@ const ViewGroup = (props) => {
     const CompanyLogo = () => {
         return (
             <>
-                <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity onPress={() => props.navigation.goBack()} style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal:10, paddingVertical:10 }}>
+               {groups && showMenu && <Menu navigation={props.navigation} group_id = {groups._id} onPress={() => setShowMenu(false)} />}
+                <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => props.navigation.goBack()} style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10, paddingVertical: 10 }}>
                         <Icon name='arrow-left' size={20} color='white' />
-
                     </TouchableOpacity >
 
 
                     {groups &&
-                        <Text style={{ alignSelf: 'center', fontSize: 20, color: '#fff', marginLeft: 15 }}>{groups.group_name}</Text>
-
+                        <View style={{ flex: 1 }}>
+                            <Text style={{ fontSize: 20, color: '#fff', marginLeft: 15 }}>{groups.group_name}</Text>
+                        </View>
                     }
+                    <View>
+                        <TouchableOpacity onPress={() => console.log('hello')} style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10, paddingVertical: 10 }}>
+                            <Icon name="dots-vertical" size={20} color="white" onPress={() => setShowMenu(true)} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
 
             </>
 
@@ -196,29 +205,24 @@ const ViewGroup = (props) => {
 
     const renderScene = ({ route }) => {
         switch (route.key) {
-          case 'bills':
-            return  <Bills bills={groups.transactions} created_by={groups.created_by} group_id={groups._id}  />
-          case 'members':
-            return  <Members members={groups.members} created_by={groups.created_by} group_id={groups._id} />
-          case 'summary':
-                return   <Summary summary={summary} created_by={groups.created_by} group_id={groups._id}  />
-          default:
-            return null;
+            case 'bills':
+                return <Bills bills={groups.transactions} created_by={groups.created_by} group_id={groups._id} />
+            case 'members':
+                return <Members members={groups.members} created_by={groups.created_by} group_id={groups._id} />
+            case 'summary':
+                return <Summary summary={summary} created_by={groups.created_by} group_id={groups._id} />
+            default:
+                return null;
         }
-      };
+    };
 
     return (
         <React.Fragment>
             <StatusBar barStyle="dark-content" />
+            <View style={{ display: 'flex', backgroundColor: '#2196f3', }}>
+                <CompanyLogo />
+            </View>
             <View style={styles.container}>
-
-
-                <View style={styles.headerContainer}>
-                    <View style={{ marginTop: 15 }}>
-                        <CompanyLogo />
-                    </View>
-
-                </View>
                 <View style={{ flex: 1, width: '100%' }}>
                     <TabView
                         navigationState={{ index, routes }}
@@ -228,10 +232,7 @@ const ViewGroup = (props) => {
                         lazy={true}
                     />
                 </View>
-
-
             </View>
-
         </React.Fragment>
     )
 }
@@ -252,8 +253,11 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         backgroundColor: '#2196f3',
-        width: '100%',
+        //width: '100%',
         alignItems: 'flex-start',
+        display: 'flex',
+        flexDirection: 'row',
+        flex: 1
 
     },
     scene: {
